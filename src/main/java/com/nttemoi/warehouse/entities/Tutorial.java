@@ -1,0 +1,44 @@
+package com.nttemoi.warehouse.entities;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
+@Entity
+@Table (name = "tutorials")
+public class Tutorial {
+
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column (length = 128, nullable = false)
+    private String title;
+
+    @Column (length = 256)
+    private String description;
+
+    @Column (nullable = false)
+    private String level;
+
+    @Column (nullable = false)
+    private boolean published;
+
+    @CreationTimestamp
+    @Column (updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+}
