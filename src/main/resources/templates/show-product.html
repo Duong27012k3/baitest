@@ -71,7 +71,7 @@
                                                 <a class = "btn btn-danger fa-regular fa-square" th:href = "@{'/product/' + ${product.id} + '/published/true'}" th:if = "${product.published == false}" title = "Enable this product"></a>
                                             </td>
                                             <td>
-                                                <a class = "btn btn-primary fa-solid fa-info" th:href = "@{'/product/' + ${product.id}}" title = "More details"></a>
+                                                <a class = "btn btn-primary fa-solid fa-info" th:href = "@{'/product/detail/' + ${product.id}}" title = "More details"></a>
                                                 <a class = "btn btn-primary fa-regular fa-pen-to-square icon-dark" th:href = "@{'/product/' + ${product.id}}" title = "Edit this product"></a>
                                                 <a class = "btn btn-danger fa-regular fa-trash-can icon-dark" data-bs-target = "#deleteModal" data-bs-toggle = "modal" onclick = "openDeleteModal(event, this.href)" th:href = "@{'/product/delete/' + ${product.id}}" title = "Delete this product"></a>
                                             </td>

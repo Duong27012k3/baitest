@@ -1,6 +1,6 @@
 package com.nttemoi.warehouse.controlllers;
 
-import com.nttemoi.warehouse.entities.Supplier;
+import com.nttemoi.warehouse.dtos.SupplierDTO;
 import com.nttemoi.warehouse.services.impl.SupplierServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -9,37 +9,33 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping ("/supplier")
+@RequestMapping("/supplier")
 public class SupplierController {
-
     private final SupplierServiceImpl supplierService;
 
-    public SupplierController (SupplierServiceImpl supplierService) {
+    public SupplierController(SupplierServiceImpl supplierService) {
         this.supplierService = supplierService;
     }
 
     @GetMapping
-    public String getAll (Model model,
-                          @RequestParam(required = false) String keyword,
-                          @RequestParam (defaultValue = "1") int page,
-                          @RequestParam (defaultValue = "10") int size,
-                          @RequestParam (required = false) String order,
-                          @RequestParam (required = false) String orderBy) {
-        Page<Supplier> pageTuts;
+    public String getAll(Model model,
+                         @RequestParam(required = false) String keyword,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(defaultValue = "10") int size,
+                         @RequestParam(required = false) String order,
+                         @RequestParam(required = false) String orderBy) {
+        Page<SupplierDTO> pageTuts;
 
         if (keyword == null) {
             if (order != null) {
                 pageTuts = supplierService.findAllAndSort(page - 1, size, order, orderBy);
-            }
-            else {
+            } else {
                 pageTuts = supplierService.findAll(page - 1, size);
             }
-        }
-        else {
+        } else {
             if (order != null) {
                 pageTuts = supplierService.findByKeywordAndSort(keyword, page - 1, size, order, orderBy);
-            }
-            else {
+            } else {
                 pageTuts = supplierService.findByKeyword(keyword, page - 1, size);
             }
             model.addAttribute("keyword", keyword);
@@ -58,30 +54,29 @@ public class SupplierController {
         return "show-supplier";
     }
 
-    @GetMapping ("/new")
-    public String addSupplier (Model model) {
-        Supplier suppliers = new Supplier();
-        suppliers.setPublished(true);
+    @GetMapping("/new")
+    public String addSupplier(Model model) {
+        SupplierDTO supplier = new SupplierDTO();
+        supplier.setPublished(true);
 
-        model.addAttribute("suppliers", suppliers);
+        model.addAttribute("suppliers", supplier);
 
         return "add-supplier";
     }
 
     @PostMapping("/save")
-    public String saveSupplier (Supplier supplier,
-                                RedirectAttributes redirectAttributes) {
+    public String saveSupplier(SupplierDTO supplier,
+                               RedirectAttributes redirectAttributes) {
         supplierService.save(supplier);
 
         redirectAttributes.addFlashAttribute("message", "The Supplier has been saved successfully!");
-
         return "redirect:/supplier";
     }
 
-    @GetMapping ("/{id}")
-    public String editSupplier (@PathVariable("id") Long id,
-                                Model model) {
-        Supplier supplier = supplierService.findById(id);
+    @GetMapping("/{id}")
+    public String editSupplier(@PathVariable("id") Long id,
+                               Model model) {
+        SupplierDTO supplier = supplierService.findById(id);
 
         model.addAttribute("suppliers", supplier);
         model.addAttribute("pageTitle", "Edit Supplier (ID: " + id + ")");
@@ -89,9 +84,9 @@ public class SupplierController {
         return "add-supplier";
     }
 
-    @GetMapping ("/delete/{id}")
-    public String deleteSupplier (@PathVariable ("id") Long id,
-                                  RedirectAttributes redirectAttributes) {
+    @GetMapping("/delete/{id}")
+    public String deleteSupplier(@PathVariable("id") Long id,
+                                 RedirectAttributes redirectAttributes) {
         try {
             supplierService.deleteById(id);
 
@@ -103,10 +98,10 @@ public class SupplierController {
         return "redirect:/supplier";
     }
 
-    @GetMapping ("/{id}/published/{status}")
-    public String updateSupplierPublishedStatus (@PathVariable ("id") Long id,
-                                                 @PathVariable ("status") boolean published,
-                                                 RedirectAttributes redirectAttributes) {
+    @GetMapping("/{id}/published/{status}")
+    public String updateSupplierPublishedStatus(@PathVariable("id") Long id,
+                                                @PathVariable("status") boolean published,
+                                                RedirectAttributes redirectAttributes) {
         try {
             supplierService.updatePublishedStatus(id, published);
 

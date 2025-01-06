@@ -36,7 +36,6 @@ public class ProductController {
                           @RequestParam (required = false) String order,
                           @RequestParam (required = false) String orderBy) {
         Page<Product> pageTuts;
-
         System.out.println(page+" " +size);
         if (keyword == null) {
             if (order != null) {
@@ -69,6 +68,40 @@ public class ProductController {
         return "show-product";
     }
 
+    @GetMapping("/detail/{id}")
+    public String getAllBom(Model model, @PathVariable Long id,
+                            @RequestParam(required = false) String keyword,
+                            @RequestParam(defaultValue = "1") int page,
+                            @RequestParam(defaultValue = "10") int size,
+                            @RequestParam(required = false) String order,
+                            @RequestParam(required = false) String orderBy) {
+        Page<Productbom> pageTuts;
+        if (keyword == null) {
+            if (order != null) {
+                pageTuts = productbomService.findAllByProductIdAndSort(id, page - 1, size, order, orderBy);
+            } else {
+                pageTuts = productbomService.findAllByProductId(id, page - 1, size);
+            }
+        } else {
+            if (order != null) {
+                pageTuts = productbomService.findAllByProductIdAndSort(id, page - 1, size, order, orderBy);
+            }
+            else {
+                pageTuts = productbomService.findByKeywordAndProductId(keyword,id, page - 1, size);
+            }
+            model.addAttribute("keyword", keyword);
+        }
+        if (order != null) {
+            model.addAttribute("order", order);
+            model.addAttribute("orderBy", orderBy);
+        }
+        model.addAttribute("productboms", pageTuts.getContent());
+        model.addAttribute("currentPage", pageTuts.getNumber() + 1);
+        model.addAttribute("totalItems", pageTuts.getTotalElements());
+        model.addAttribute("totalPages", pageTuts.getTotalPages());
+        model.addAttribute("pageSize", size);
+        return "show-productbom";
+    }
     @GetMapping ("/new")
     public String addProduct (Model model) {
         Product product = new Product();
@@ -82,10 +115,20 @@ public class ProductController {
     @PostMapping("/save")
     public String saveProduct (Product product,
                                 RedirectAttributes redirectAttributes) {
-        productService.save(product);
 
-        redirectAttributes.addFlashAttribute("message", "The Product has been saved successfully!");
+        try {
+            if (product.getProductbomlist() != null) {
+                for (Productbom productbom : product.getProductbomlist()) {
+                    productbom.setProduct(product);
+                }
+            }
+            productService.save(product);
 
+            redirectAttributes.addFlashAttribute("message", "The Product has been saved successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to save the product: " + e.getMessage());
+            return "redirect:/product/new";
+        }
         return "redirect:/product";
     }
 
@@ -119,12 +162,20 @@ public class ProductController {
         return "redirect:/product";
     }
     @GetMapping("/submit/{id}")
-    public String submitProduct (@PathVariable ("id") Long id,@ModelAttribute Product product){
-        for(Productbom productbom : product.getProductbomlist()) {
-            productbom.setProduct(product);
-            productbomService.save(productbom);
+    public String submitProduct(@PathVariable("id") Long id, @ModelAttribute Product product,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            if (product.getProductbomlist() != null) {
+                for (Productbom productbom : product.getProductbomlist()) {
+                    productbom.setProduct(product);
+                    productbomService.save(productbom);
+                }
+            }
+            productService.save(product);
+            redirectAttributes.addFlashAttribute("message", "Product and BOM have been submitted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to submit the product: " + e.getMessage());
         }
-        productService.save(product);
         return "redirect:/product";
     }
     @GetMapping ("/{id}/published/{status}")
@@ -133,7 +184,6 @@ public class ProductController {
                                                  RedirectAttributes redirectAttributes) {
         try {
             productService.updatePublishedStatus(id, published);
-
             String status = published ? "published" : "disabled";
             String message = "The Product id=" + id + " has been " + status;
 

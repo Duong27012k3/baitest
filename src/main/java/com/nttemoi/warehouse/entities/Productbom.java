@@ -20,7 +20,7 @@ public class Productbom {
     private Long id;
 
     @ManyToOne
-    @JoinColumn (name = "product_id")
+    @JoinColumn (name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false,length =50)

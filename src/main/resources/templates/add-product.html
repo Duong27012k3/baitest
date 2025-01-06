@@ -2,7 +2,7 @@
 <html lang = "en" layout:decorate = "~{layout}" xmlns:layout = "http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th = "https://www.thymeleaf.org">
 <head>
-    <title>Add Product</title>
+    <title>Manage Product</title>
 </head>
 <body>
 <section layout:fragment = "content">
@@ -11,13 +11,13 @@
             <div class = "container-fluid">
                 <div class = "row mb-2">
                     <div class = "col-sm-6">
-                        <h1 class = "m-0">Add Product</h1>
+                        <h1 class = "m-0">Manage Product</h1>
                     </div>
                     <div class = "col-sm-6">
                         <ol class = "breadcrumb float-right">
                             <li class = "breadcrumb-item"><a href = "/">Home</a></li>
                             <li class = "breadcrumb-item"><a href = "/product">Product</a></li>
-                            <li class = "breadcrumb-item active">Add</li>
+                            <li class = "breadcrumb-item active">Manage</li>
                         </ol>
                     </div>
                 </div>
@@ -96,28 +96,31 @@
                                         <script>
                                             let rowIndex = document.querySelectorAll("#productbom-table tr").length;
                                             const test=document.getElementById('table-bom');
-                                            if (rowIndex !== 0){
-                                                test.style.display = "";
-                                            }
+                                            // if (rowIndex !== 0){
+                                            //     test.style.display = "";
+                                            // }
                                             document.getElementById('add-new-btn').addEventListener('click', function() {
                                                 if (rowIndex === 0){
                                                     test.style.display = "";
                                                 }
                                                 const newRow = document.createElement('tr');
                                                 newRow.innerHTML = `
-                         <td><input type="checkbox" class="select-checkbox" ></td>
-                         <td><input type="text" name="productbomlist[${rowIndex}].name" /></td>
-                         <td><input type="text" name="productbomlist[${rowIndex}].quantity" /></td>
-                         <td><input type="text" name="productbomlist[${rowIndex}].unit" /></td>
-                          `;
+        <td><input type="checkbox" class="select-checkbox"></td>
+        <td><input type="text" name="productbomlist[${rowIndex}].name" /></td>
+        <td><input type="text" name="productbomlist[${rowIndex}].quantity" /></td>
+        <td><input type="text" name="productbomlist[${rowIndex}].unit" /></td>
+    `;
                                                 document.getElementById('productbom-table').appendChild(newRow);
+                                                rowIndex++; // Tăng chỉ số sau khi thêm hàng
                                             });
 
                                             document.getElementById('delete-btn').addEventListener('click', function() {
                                                 document.querySelectorAll('.select-checkbox:checked').forEach(function(checkbox) {
                                                     checkbox.closest('tr').remove();
                                                 });
+                                                rowIndex = document.querySelectorAll('#productbom-table tr').length; // Cập nhật lại số hàng
                                             });
+
                                         </script>
 
                                     </div>
@@ -130,7 +133,7 @@
 
                                     <div class = "text-center">
                                         <input class = "btn btn-primary" type = "submit" value = "Save"/>
-                                        <a class = "btn btn-secondary" href = "/tutorials">Cancel</a>
+                                        <a class = "btn btn-secondary" href = "/product">Cancel</a>
                                     </div>
                                 </form>
                             </div>
