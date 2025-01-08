@@ -6,17 +6,15 @@ import com.nttemoi.warehouse.dtos.SupplierDTO;
 import com.nttemoi.warehouse.services.impl.ProductServiceImpl;
 import com.nttemoi.warehouse.services.impl.ProductbomServiceImpl;
 import com.nttemoi.warehouse.services.impl.SupplierServiceImpl;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
@@ -116,9 +114,12 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String saveProduct( @ModelAttribute("product") ProductDTO productDTO,
-                              RedirectAttributes redirectAttributes) {
+    public String saveProduct(@ModelAttribute("product") ProductDTO productDTO,
+                              RedirectAttributes redirectAttributes, BindingResult result) {
         try {
+            if (result.hasErrors()) {
+                return "add-product"; // Trả về trang biểu mẫu nếu có lỗi
+            }
             if (productDTO.getName() == null || productDTO.getName().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Product name cannot be empty!");
                 return "redirect:/product/new";

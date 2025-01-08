@@ -17,14 +17,14 @@ import lombok.Setter;
 public class ProductbomDTO {
     private Long id;
     @NotBlank(message = "Name cannot be blank")
-    @Size(max = 100, message = "Name must not exceed 100 characters")
+    @Size(max = 50, message = "Name must not exceed 100 characters")
     private String name;
 
     @Min(value = 1, message = "Quantity must be greater than 0")
     private long quantity;
 
     @NotBlank(message = "Unit cannot be blank")
-    @Size(max = 50, message = "Unit must not exceed 50 characters")
+    @Size(max = 100, message = "Unit must not exceed 50 characters")
     private String unit;
 
     @NotNull(message = "ProductDTO cannot be null")

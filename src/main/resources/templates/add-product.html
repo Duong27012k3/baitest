@@ -83,9 +83,9 @@
                                         <tbody id="productbom-table">
                                         <tr th:each="productbom, iterStat : ${product.productbomlist}">
                                             <td><input type="checkbox" class="select-checkbox"></td>
-                                            <td><input type="text" th:field="*{productbomlist[__${iterStat.index}__].name}" /></td>
-                                            <td><input type="text" th:field="*{productbomlist[__${iterStat.index}__].quantity}" /></td>
-                                            <td><input type="text" th:field="*{productbomlist[__${iterStat.index}__].unit}" /></td>
+                                            <td><input class="form-control" maxlength="50" minlength="2" required type="text" th:field="*{productbomlist[__${iterStat.index}__].name}" /></td>
+                                            <td><input maxlength="100" minlength="1" type="text" th:field="*{productbomlist[__${iterStat.index}__].quantity}" /></td>
+                                            <td><input maxlength="100" minlength="1" type="text" th:field="*{productbomlist[__${iterStat.index}__].unit}" /></td>
 <!--                                            <input type="hidden" th:field="*{productbomlist[__${iterStat.index}__].product.id}" value="${product.id}" />-->
                                         </tr>
                                         </tbody>
