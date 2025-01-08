@@ -79,8 +79,6 @@ public class SupplierController {
         SupplierDTO supplier = supplierService.findById(id);
 
         model.addAttribute("suppliers", supplier);
-        model.addAttribute("pageTitle", "Edit Supplier (ID: " + id + ")");
-
         return "add-supplier";
     }
 
@@ -90,7 +88,7 @@ public class SupplierController {
         try {
             supplierService.deleteById(id);
 
-            redirectAttributes.addFlashAttribute("message", "The Supplier with id=" + id + " has been deleted successfully!");
+            redirectAttributes.addFlashAttribute("message", "The Supplier has been deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
@@ -106,7 +104,7 @@ public class SupplierController {
             supplierService.updatePublishedStatus(id, published);
 
             String status = published ? "published" : "disabled";
-            String message = "The Supplier id=" + id + " has been " + status;
+            String message = "The Supplier has been " + status;
 
             redirectAttributes.addFlashAttribute("message", message);
         } catch (Exception e) {

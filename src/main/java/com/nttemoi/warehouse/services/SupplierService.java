@@ -32,4 +32,5 @@ public interface SupplierService {
     void deleteById(Long id);
     Page<SupplierDTO> findAllAndSort(int page, int size, String order, String orderBy);
     Page<SupplierDTO> findByKeywordAndSort(String keyword, int page, int size, String order, String orderBy);
+    List<SupplierDTO> findAll();
 }

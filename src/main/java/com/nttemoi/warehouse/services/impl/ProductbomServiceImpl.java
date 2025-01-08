@@ -1,51 +1,58 @@
 package com.nttemoi.warehouse.services.impl;
 
-import com.nttemoi.warehouse.entities.Product;
+import com.nttemoi.warehouse.dtos.ProductbomDTO;
 import com.nttemoi.warehouse.entities.Productbom;
 import com.nttemoi.warehouse.repositories.ProductbomRepository;
 import com.nttemoi.warehouse.services.ProductbomService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-
 public class ProductbomServiceImpl implements ProductbomService {
+
     private final ProductbomRepository productbomRepository;
+    private final ModelMapper modelMapper;
 
-    public ProductbomServiceImpl(ProductbomRepository productbomRepository) {
+    @Autowired
+    public ProductbomServiceImpl(ProductbomRepository productbomRepository, ModelMapper modelMapper) {
         this.productbomRepository = productbomRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    private ProductbomDTO convertToDTO(Productbom productbom) {
+        return modelMapper.map(productbom, ProductbomDTO.class);
+    }
+
+    private Productbom convertToEntity(ProductbomDTO productbomDTO) {
+        return modelMapper.map(productbomDTO, Productbom.class);
     }
 
     @Override
-    public Page<Productbom> findAll(int page, int size) {
-        return productbomRepository.findAll(PageRequest.of(page, size, Sort.by("name")));
-    }
-//    @Override
-//    public Page<Productbom> findByKeyword(String keyword, int page, int size) {
-//
-//    }
-
-//    @Override
-//    public Page<Productbom> findByKeyword(String keyword, int page, int size) {
-//        return productbomRepository.findByNameLikeOrUnitLikeAndProductId("%" + keyword + "%", "%" + keyword + "%", PageRequest.of(page, size));
-//    }
-
-    @Override
-    public List<Productbom> findAll() {
-        return productbomRepository.findAll();
+    public Page<ProductbomDTO> findAll(int page, int size) {
+        return productbomRepository.findAll(PageRequest.of(page, size, Sort.by("name")))
+                .map(this::convertToDTO);
     }
 
     @Override
-    public Productbom findById(Long id) {
-        return productbomRepository.findById(id).orElse(null);
+    public List<ProductbomDTO> findAll() {
+        return productbomRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public void save(Productbom productbom) {
+    public ProductbomDTO findById(Long id) {
+        return productbomRepository.findById(id).map(this::convertToDTO).orElse(null);
+    }
+
+    @Override
+    public void save(ProductbomDTO productbomDTO) {
+        Productbom productbom = convertToEntity(productbomDTO);
         productbomRepository.save(productbom);
     }
 
@@ -55,45 +62,25 @@ public class ProductbomServiceImpl implements ProductbomService {
     }
 
     @Override
-    public Page<Productbom> findAllAndSort(int page, int size, String order, String orderBy) {
-        if (order.equals("asc")) {
-            return productbomRepository.findAll(PageRequest.of(page, size, Sort.by(orderBy).ascending()));
-        } else {
-            return productbomRepository.findAll(PageRequest.of(page, size, Sort.by(orderBy).descending()));
-        }
+    public Page<ProductbomDTO> findAllAndSort(int page, int size, String order, String orderBy) {
+        Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
+        return productbomRepository.findAll(PageRequest.of(page, size, sort)).map(this::convertToDTO);
     }
 
     @Override
-    public Page<Productbom> findAllByProductId(Long productId, int page, int size) {
-        return productbomRepository.findByProductId(productId, PageRequest.of(page, size));
+    public Page<ProductbomDTO> findAllByProductId(Long productId, int page, int size) {
+        return productbomRepository.findByProductId(productId, PageRequest.of(page, size)).map(this::convertToDTO);
     }
 
     @Override
-    public Page<Productbom> findAllByProductIdAndSort(Long productId, int page, int size, String order, String orderBy) {
-        if (order.equals("asc")) {
-            return productbomRepository.findByProductId(productId, PageRequest.of(page, size, Sort.by(orderBy).ascending()));
-        } else {
-            return productbomRepository.findByProductId(productId, PageRequest.of(page, size, Sort.by(orderBy).descending()));
-        }
+    public Page<ProductbomDTO> findAllByProductIdAndSort(Long productId, int page, int size, String order, String orderBy) {
+        Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
+        return productbomRepository.findByProductId(productId, PageRequest.of(page, size, sort)).map(this::convertToDTO);
     }
-
-//    @Override
-//    public Page<Productbom> findByKeyword(String keyword, int page, int size) {
-//
-//        return productbomRepository.findProductbomByNameLike(keyword, PageRequest.of(page, size, Sort.by("name")));
-//    }
 
     @Override
-    public Page<Productbom> findByKeywordAndProductId(String keyword, Long productId, int page, int size) {
-        return productbomRepository.findByNameLikeAndProductId("%" + keyword + "%", productId, PageRequest.of(page, size));
+    public Page<ProductbomDTO> findByKeywordAndProductId(String keyword, Long productId, int page, int size) {
+        return productbomRepository.findByNameLikeAndProductId("%" + keyword + "%", productId, PageRequest.of(page, size)).map(this::convertToDTO);
     }
 
-//    @Override
-//    public Page<Productbom> findByKeywordAndProductIdAndSort(String keyword, Long productId, int page, int size, String order, String orderBy) {
-//        if (order.equals("asc")) {
-//            return productbomRepository.findByNameLikeOrUnitLikeAndProductId("%" + keyword + "%", "%" + keyword + "%", productId, PageRequest.of(page, size, Sort.by(orderBy).ascending()));
-//        } else {
-//            return productbomRepository.findByNameLikeOrUnitLikeAndProductId("%" + keyword + "%", "%" + keyword + "%", productId, PageRequest.of(page, size, Sort.by(orderBy).descending()));
-//        }
-//    }
 }

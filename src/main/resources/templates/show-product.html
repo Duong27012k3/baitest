@@ -1,100 +1,108 @@
 <!DOCTYPE html>
-<html lang = "en" layout:decorate = "~{layout}" xmlns:layout = "http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>Product</title>
 </head>
 <body>
-<section layout:fragment = "content">
-    <div class = "content-wrapper">
-        <div class = "content-header">
-            <div class = "container-fluid">
-                <div class = "row mb-2">
-                    <div class = "col-sm-6">
-                        <h1 class = "m-0">Product</h1>
+<section layout:fragment="content">
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Product</h1>
                     </div>
-                    <div class = "col-sm-6">
-                        <ol class = "breadcrumb float-right">
-                            <li class = "breadcrumb-item"><a href = "/">Home</a></li>
-                            <li class = "breadcrumb-item active">Product</li>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-right">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active">Product</li>
                         </ol>
                     </div>
                 </div>
             </div>
         </div>
-        <section class = "content">
-            <div class = "container-fluid">
-                <div th:replace = "~{fragments/message :: message}"></div>
-                <div class = "row">
-                    <div class = "col-12">
-                        <div class = "card">
-                            <div class = "card-body">
-                                <div th:replace = "~{fragments/searchForm :: searchForm('product')}"></div>
+        <section class="content">
+            <div class="container-fluid">
+                <div th:replace="~{fragments/message :: message}"></div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div th:replace="~{fragments/searchForm :: searchForm('product')}"></div>
 
-                                <div class = "table-responsive" th:if = "${products.size() > 0}">
-                                    <table class = "table table-hover table-bordered">
-                                        <thead class = "thead-light">
+                                <div class="table-responsive" th:if="${products.size() > 0}">
+                                    <table class="table table-hover table-bordered">
+                                        <thead class="thead-light">
                                         <tr>
-                                            <th scope = "col">No.</th>
-                                            <th scope = "col">
-                                                <div th:replace = "~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Name', ${orderBy})}"></div>
+                                            <th scope="col">No.</th>
+                                            <th scope="col">
+                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Name', ${orderBy})}"></div>
                                             </th>
-                                            <th scope = "col">
-                                                <div th:replace = "~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Type', ${orderBy})}"></div>
+                                            <th scope="col">
+                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Type', ${orderBy})}"></div>
                                             </th>
-                                            <th scope = "col">
-                                                <div th:replace = "~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Weight', ${orderBy})}"></div>
+                                            <th scope="col">
+                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Weight', ${orderBy})}"></div>
                                             </th>
-                                            <th scope = "col">
-                                                <div th:replace = "~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Size', ${orderBy})}"></div>
+                                            <th scope="col">
+                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Size', ${orderBy})}"></div>
                                             </th>
-                                            <th scope = "col">
-                                                <div th:replace = "~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Supplier', ${orderBy})}"></div>
+                                            <th scope="col">
+                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Supplier', ${orderBy})}"></div>
                                             </th>
-<!--                                            <th scope = "col">Supplier</th>-->
-                                            <th scope = "col">
-                                                <div th:replace = "~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Published', ${orderBy})}"></div>
-                                            </th>
-                                            <th scope = "col">Actions</th>
+<!--                                            <th scope="col">-->
+<!--                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Published', ${orderBy})}"></div>-->
+<!--                                            </th>-->
+                                            <th scope="col">Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each = "product, iterStat : ${products}">
-                                            <th scope = "row">[[${(currentPage - 1) * pageSize + iterStat.count}]]</th>
+                                        <tr th:each="product, iterStat : ${products}">
+                                            <th scope="row">[[${(currentPage - 1) * pageSize + iterStat.count}]]</th>
                                             <td>[[${product.name}]]</td>
                                             <td>[[${product.type}]]</td>
-                                            <td>[[${product.weight}]]
+                                            <td>[[${product.weight}]]</td>
                                             <td>[[${product.size}]]</td>
-                                            <td>[[${product.supplier.name}]]</td>
-<!--                                            <td th:text="${product.supplier.name}">Supplier</td>-->
                                             <td>
-                                                <a class = "btn btn-success fa-regular fa-square-check" th:href = "@{'/product/' + ${product.id} + '/published/false'}" th:if = "${product.published == true}" title = "Disable this product"></a>
-                                                <a class = "btn btn-danger fa-regular fa-square" th:href = "@{'/product/' + ${product.id} + '/published/true'}" th:if = "${product.published == false}" title = "Enable this product"></a>
+                                                <span th:if="${product.supplierDTO != null}" th:text="${product.supplierDTO.name}"></span>
+                                                <span th:unless="${product.supplierDTO != null}">No Supplier</span>
                                             </td>
+
+                                            <!--                                            <td th:text="${product.supplierDTO.name}"></td>-->
+<!--&lt;!&ndash;                                            <td th:text="${product.supplierDTO != null ? product.supplierDTO.name : 'No Supplier'}">Supplier</td>&ndash;&gt;-->
+
+<!--                                            <td>-->
+<!--                                            <td>-->
+<!--                                                <a class="btn btn-success fa-regular fa-square-check" th:href="@{'/product/' + ${product.id} + '/published/false'}" th:if="${product.published == true}" title="Disable this product"></a>-->
+<!--                                                <a class="btn btn-danger fa-regular fa-square" th:href="@{'/product/' + ${product.id} + '/published/true'}" th:if="${product.published == false}" title="Enable this product"></a>-->
+<!--                                            </td>-->
                                             <td>
-                                                <a class = "btn btn-primary fa-solid fa-info" th:href = "@{'/product/detail/' + ${product.id}}" title = "More details"></a>
-                                                <a class = "btn btn-primary fa-regular fa-pen-to-square icon-dark" th:href = "@{'/product/' + ${product.id}}" title = "Edit this product"></a>
-                                                <a class = "btn btn-danger fa-regular fa-trash-can icon-dark" data-bs-target = "#deleteModal" data-bs-toggle = "modal" onclick = "openDeleteModal(event, this.href)" th:href = "@{'/product/delete/' + ${product.id}}" title = "Delete this product"></a>
+                                                <a class="btn btn-primary fa-solid fa-info" th:href="@{'/product/detail/' + ${product.id}}" title="More details"></a>
+                                                <a class="btn btn-primary fa-regular fa-pen-to-square icon-dark" th:href="@{'/product/' + ${product.id}}" title="Edit this product"></a>
+                                                <a class="btn btn-danger fa-regular fa-trash-can icon-dark" data-bs-target="#deleteModal" data-bs-toggle="modal" onclick="openDeleteModal(event, this.href)" th:href="@{'/product/delete/' + ${product.id}}" title="Delete this product"></a>
+                                                <a class="btn btn-success fa-regular fa-square-check" th:href="@{'/product/' + ${product.id} + '/published/false'}" th:if="${product.published == true}" title="Disable this product"></a>
+                                                <a class="btn btn-danger fa-regular fa-square" th:href="@{'/product/' + ${product.id} + '/published/true'}" th:if="${product.published == false}" title="Enable this product"></a>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
 
-                                <div th:unless = "${products.size() > 0}">
+                                <div th:unless="${products.size() > 0}">
                                     <span>No product found!</span>
                                 </div>
 
-                                <nav th:replace = "~{fragments/pagination :: pagination('product')}"></nav>
+                                <nav th:replace="~{fragments/pagination :: pagination('product')}"></nav>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div th:replace = "~{fragments/deleteModal :: deleteModal}"></div>
+            <div th:replace="~{fragments/deleteModal :: deleteModal}"></div>
         </section>
     </div>
-    <script src = "/js/common.js"></script>
+    <script src="/js/common.js"></script>
 </section>
 </body>
 </html>
