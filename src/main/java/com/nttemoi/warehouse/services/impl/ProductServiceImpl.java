@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO findDTOById(Long id) {
+    public ProductDTO findByIdDTO(Long id) {
         return productRepository.findById(id).map(this::convertToDTO).orElse(null);
     }
 
@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void save(ProductDTO productDTO) {
+    public void saveDTO(ProductDTO productDTO) {
         Product product = convertToEntity(productDTO);
         if (productDTO.getSupplierDTO() != null && productDTO.getSupplierDTO().getId() != null) {
             SupplierDTO supplier = supplierService.findByIdDTO(productDTO.getSupplierDTO().getId());
@@ -103,18 +103,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteByIdDTO(Long id) {
         productRepository.deleteById(id);
     }
 
     @Override
-    public Page<ProductDTO> findAllAndSort(int page, int size, String order, String orderBy) {
+    public Page<ProductDTO> findAllAndSortDTO(int page, int size, String order, String orderBy) {
         Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         return productRepository.findAll(PageRequest.of(page, size, sort)).map(this::convertToDTO);
     }
 
     @Override
-    public Page<ProductDTO> findByKeywordAndSort(String keyword, int page, int size, String order, String orderBy) {
+    public Page<ProductDTO> findByKeywordAndSortDTO(String keyword, int page, int size, String order, String orderBy) {
         Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         return productRepository.findByNameLikeOrTypeLike("%" + keyword + "%", "%" + keyword + "%", PageRequest.of(page, size, sort))
                 .map(this::convertToDTO);

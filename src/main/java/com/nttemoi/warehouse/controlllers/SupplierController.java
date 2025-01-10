@@ -28,15 +28,15 @@ public class SupplierController {
 
         if (keyword == null) {
             if (order != null) {
-                pageTuts = supplierService.findAllAndSort(page - 1, size, order, orderBy);
+                pageTuts = supplierService.findAllAndSortDTO(page - 1, size, order, orderBy);
             } else {
-                pageTuts = supplierService.findAll(page - 1, size);
+                pageTuts = supplierService.findAllDTO(page - 1, size);
             }
         } else {
             if (order != null) {
-                pageTuts = supplierService.findByKeywordAndSort(keyword, page - 1, size, order, orderBy);
+                pageTuts = supplierService.findByKeywordAndSortDTO(keyword, page - 1, size, order, orderBy);
             } else {
-                pageTuts = supplierService.findByKeyword(keyword, page - 1, size);
+                pageTuts = supplierService.findByKeywordDTO(keyword, page - 1, size);
             }
             model.addAttribute("keyword", keyword);
         }
@@ -67,7 +67,7 @@ public class SupplierController {
     @PostMapping("/save")
     public String saveSupplier(SupplierDTO supplier,
                                RedirectAttributes redirectAttributes) {
-        supplierService.save(supplier);
+        supplierService.saveDTO(supplier);
 
         redirectAttributes.addFlashAttribute("message", "The Supplier has been saved successfully!");
         return "redirect:/supplier";
@@ -86,7 +86,7 @@ public class SupplierController {
     public String deleteSupplier(@PathVariable("id") Long id,
                                  RedirectAttributes redirectAttributes) {
         try {
-            supplierService.deleteById(id);
+            supplierService.deleteByIdDTO(id);
 
             redirectAttributes.addFlashAttribute("message", "The Supplier has been deleted successfully!");
         } catch (Exception e) {

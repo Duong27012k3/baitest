@@ -11,9 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class ProductbomServiceImpl implements ProductbomService {
     private final ProductbomRepository productbomRepository;
@@ -29,56 +26,19 @@ public class ProductbomServiceImpl implements ProductbomService {
         return modelMapper.map(productbom, ProductbomDTO.class);
     }
 
-    private Productbom convertToEntity(ProductbomDTO productbomDTO) {
-        return modelMapper.map(productbomDTO, Productbom.class);
-    }
-
     @Override
-    public Page<ProductbomDTO> findAll(int page, int size) {
-        return productbomRepository.findAll(PageRequest.of(page, size, Sort.by("name")))
-                .map(this::convertToDTO);
-    }
-
-    @Override
-    public List<ProductbomDTO> findAll() {
-        return productbomRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public ProductbomDTO findById(Long id) {
-        return productbomRepository.findById(id).map(this::convertToDTO).orElse(null);
-    }
-
-    @Override
-    public void save(ProductbomDTO productbomDTO) {
-        Productbom productbom = convertToEntity(productbomDTO);
-        productbomRepository.save(productbom);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        productbomRepository.deleteById(id);
-    }
-
-    @Override
-    public Page<ProductbomDTO> findAllAndSort(int page, int size, String order, String orderBy) {
-        Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
-        return productbomRepository.findAll(PageRequest.of(page, size, sort)).map(this::convertToDTO);
-    }
-
-    @Override
-    public Page<ProductbomDTO> findAllByProductId(Long productId, int page, int size) {
+    public Page<ProductbomDTO> findAllByProductIdDTO(Long productId, int page, int size) {
         return productbomRepository.findByProductId(productId, PageRequest.of(page, size)).map(this::convertToDTO);
     }
 
     @Override
-    public Page<ProductbomDTO> findAllByProductIdAndSort(Long productId, int page, int size, String order, String orderBy) {
+    public Page<ProductbomDTO> findAllByProductIdAndSortDTO(Long productId, int page, int size, String order, String orderBy) {
         Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         return productbomRepository.findByProductId(productId, PageRequest.of(page, size, sort)).map(this::convertToDTO);
     }
 
     @Override
-    public Page<ProductbomDTO> findByKeywordAndProductId(String keyword, Long productId, int page, int size) {
+    public Page<ProductbomDTO> findByKeywordAndProductIdDTO(String keyword, Long productId, int page, int size) {
         return productbomRepository.findByNameLikeAndProductId("%" + keyword + "%", productId, PageRequest.of(page, size)).map(this::convertToDTO);
     }
 }

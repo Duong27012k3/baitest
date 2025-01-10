@@ -34,18 +34,22 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Page<SupplierDTO> findAll(int page, int size) {
+    public Page<SupplierDTO> findAllDTO(int page, int size) {
         Page<Supplier> suppliers = supplierRepository.findAll(PageRequest.of(page, size, Sort.by("name")));
         return suppliers.map(supplier -> modelMapper.map(supplier, SupplierDTO.class));
     }
     @Override
-    public List<SupplierDTO> findAll() {
+    public List<SupplierDTO> findAllDTO() {
         return supplierRepository.findAll().stream()
                 .map(supplier -> modelMapper.map(supplier, SupplierDTO.class))
                 .collect(Collectors.toList());
     }
     @Override
-    public Page<SupplierDTO> findByKeyword(String keyword, int page, int size) {
+    public List<Supplier> findAll() {
+        return supplierRepository.findAll();
+    }
+    @Override
+    public Page<SupplierDTO> findByKeywordDTO(String keyword, int page, int size) {
         return supplierRepository.findByNameLikeOrPhoneLike("%" + keyword + "%", "%" + keyword + "%", PageRequest.of(page, size))
                 .map(this::convertToDTO);
     }
@@ -63,7 +67,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void save(SupplierDTO supplierDTO) {
+    public void saveDTO(SupplierDTO supplierDTO) {
         supplierRepository.save(convertToEntity(supplierDTO));
     }
 
@@ -73,19 +77,19 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteByIdDTO(Long id) {
         supplierRepository.deleteById(id);
     }
 
     @Override
-    public Page<SupplierDTO> findAllAndSort(int page, int size, String order, String orderBy) {
+    public Page<SupplierDTO> findAllAndSortDTO(int page, int size, String order, String orderBy) {
         Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         return supplierRepository.findAll(PageRequest.of(page, size, sort))
                 .map(this::convertToDTO);
     }
 
     @Override
-    public Page<SupplierDTO> findByKeywordAndSort(String keyword, int page, int size, String order, String orderBy) {
+    public Page<SupplierDTO> findByKeywordAndSortDTO(String keyword, int page, int size, String order, String orderBy) {
         Sort sort = order.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
         return supplierRepository.findByNameLikeOrPhoneLike("%" + keyword + "%", "%" + keyword + "%", PageRequest.of(page, size, sort))
                 .map(this::convertToDTO);
