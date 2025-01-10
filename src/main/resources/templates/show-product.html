@@ -50,9 +50,9 @@
                                             <th scope="col">
                                                 <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Supplier', ${orderBy})}"></div>
                                             </th>
-<!--                                            <th scope="col">-->
-<!--                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Published', ${orderBy})}"></div>-->
-<!--                                            </th>-->
+                                            <th scope="col">
+                                                <div th:replace="~{fragments/sortBtn :: sortBtn('product', ${order != '' && order != null ? order : ''}, 'Published', ${orderBy})}"></div>
+                                            </th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                         </thead>
@@ -69,19 +69,19 @@
                                             </td>
 
                                             <!--                                            <td th:text="${product.supplierDTO.name}"></td>-->
-<!--&lt;!&ndash;                                            <td th:text="${product.supplierDTO != null ? product.supplierDTO.name : 'No Supplier'}">Supplier</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;                                            <td th:text="${product.supplierDTO != null ? product.supplierDTO.name : 'No Supplier'}">Supplier</td>&ndash;&gt;-->
 
-<!--                                            <td>-->
-<!--                                            <td>-->
-<!--                                                <a class="btn btn-success fa-regular fa-square-check" th:href="@{'/product/' + ${product.id} + '/published/false'}" th:if="${product.published == true}" title="Disable this product"></a>-->
-<!--                                                <a class="btn btn-danger fa-regular fa-square" th:href="@{'/product/' + ${product.id} + '/published/true'}" th:if="${product.published == false}" title="Enable this product"></a>-->
-<!--                                            </td>-->
+                                            <!--                                            <td>-->
+                                            <td>
+                                                <a class="btn btn-success fa-regular fa-square-check" th:href="@{'/product/' + ${product.id} + '/published/false'}" th:if="${product.published == true}" title="Disable this product"></a>
+                                                <a class="btn btn-danger fa-regular fa-square" th:href="@{'/product/' + ${product.id} + '/published/true'}" th:if="${product.published == false}" title="Enable this product"></a>
+                                            </td>
                                             <td>
                                                 <a class="btn btn-primary fa-solid fa-info" th:href="@{'/product/detail/' + ${product.id}}" title="More details"></a>
                                                 <a class="btn btn-primary fa-regular fa-pen-to-square icon-dark" th:href="@{'/product/' + ${product.id}}" title="Edit this product"></a>
                                                 <a class="btn btn-danger fa-regular fa-trash-can icon-dark" data-bs-target="#deleteModal" data-bs-toggle="modal" onclick="openDeleteModal(event, this.href)" th:href="@{'/product/delete/' + ${product.id}}" title="Delete this product"></a>
-                                                <a class="btn btn-success fa-regular fa-square-check" th:href="@{'/product/' + ${product.id} + '/published/false'}" th:if="${product.published == true}" title="Disable this product"></a>
-                                                <a class="btn btn-danger fa-regular fa-square" th:href="@{'/product/' + ${product.id} + '/published/true'}" th:if="${product.published == false}" title="Enable this product"></a>
+                                                <!--                                                <a class="btn btn-success fa-regular fa-square-check" th:href="@{'/product/' + ${product.id} + '/published/false'}" th:if="${product.published == true}" title="Disable this product"></a>-->
+                                                <!--                                                <a class="btn btn-danger fa-regular fa-square" th:href="@{'/product/' + ${product.id} + '/published/true'}" th:if="${product.published == false}" title="Enable this product"></a>-->
                                             </td>
                                         </tr>
                                         </tbody>

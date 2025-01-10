@@ -6,6 +6,7 @@ import com.nttemoi.warehouse.dtos.SupplierDTO;
 import com.nttemoi.warehouse.services.impl.ProductServiceImpl;
 import com.nttemoi.warehouse.services.impl.ProductbomServiceImpl;
 import com.nttemoi.warehouse.services.impl.SupplierServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.util.Validate;
+
 import java.util.ArrayList;
 import java.util.List;
 @Controller
@@ -42,7 +45,7 @@ public class ProductController {
                 if (order != null) {
                     pageTuts = productService.findAllAndSort(page - 1, size, order, orderBy);
                 } else {
-                    pageTuts = productService.findAll(page - 1, size);
+                    pageTuts = productService.findAllDTO(page - 1, size);
                 }
             } else {
                 if (order != null) {
@@ -76,33 +79,31 @@ public class ProductController {
                             @RequestParam(required = false) String order,
                             @RequestParam(required = false) String orderBy) {
         Page<ProductbomDTO> pageTuts;
-            if (keyword == null) {
-                if (order != null) {
-                    pageTuts = productbomService.findAllByProductIdAndSort(id, page - 1, size, order, orderBy);
-                } else {
-                    pageTuts = productbomService.findAllByProductId(id, page - 1, size);
-                }
-            } else {
-                if (order != null) {
-                    pageTuts = productbomService.findAllByProductIdAndSort(id, page - 1, size, order, orderBy);
-                } else {
-                    pageTuts = productbomService.findByKeywordAndProductId(keyword, id, page - 1, size);
-                }
-                model.addAttribute("keyword", keyword);
-            }
+        if (keyword == null) {
             if (order != null) {
-                model.addAttribute("order", order);
-                model.addAttribute("orderBy", orderBy);
+                pageTuts = productbomService.findAllByProductIdAndSort(id, page - 1, size, order, orderBy);
+            } else {
+                pageTuts = productbomService.findAllByProductId(id, page - 1, size);
             }
-            model.addAttribute("productboms", pageTuts.getContent());
-            model.addAttribute("currentPage", pageTuts.getNumber() + 1);
-            model.addAttribute("totalItems", pageTuts.getTotalElements());
-            model.addAttribute("totalPages", pageTuts.getTotalPages());
-            model.addAttribute("pageSize", size);
+        } else {
+            if (order != null) {
+                pageTuts = productbomService.findAllByProductIdAndSort(id, page - 1, size, order, orderBy);
+            } else {
+                pageTuts = productbomService.findByKeywordAndProductId(keyword, id, page - 1, size);
+            }
+            model.addAttribute("keyword", keyword);
+        }
+        if (order != null) {
+            model.addAttribute("order", order);
+            model.addAttribute("orderBy", orderBy);
+        }
+        model.addAttribute("productboms", pageTuts.getContent());
+        model.addAttribute("currentPage", pageTuts.getNumber() + 1);
+        model.addAttribute("totalItems", pageTuts.getTotalElements());
+        model.addAttribute("totalPages", pageTuts.getTotalPages());
+        model.addAttribute("pageSize", size);
         return "show-productbom";
     }
-
-
     @GetMapping("/new")
     public String addProduct(Model model) {
         ProductDTO productDTO = new ProductDTO();
@@ -114,29 +115,47 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String saveProduct(@ModelAttribute("product") ProductDTO productDTO,
-                              RedirectAttributes redirectAttributes, BindingResult result) {
+    public String saveProduct(@Valid @ModelAttribute("product") ProductDTO productDTO,
+                              BindingResult result,
+                              RedirectAttributes redirectAttributes) {
         try {
-            if (result.hasErrors()) {
-                return "add-product"; // Trả về trang biểu mẫu nếu có lỗi
-            }
+//            if (result.hasErrors()) {
+//                return "add-product"; // Trả về trang biểu mẫu nếu có lỗi
+//            }
             if (productDTO.getName() == null || productDTO.getName().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Product name cannot be empty!");
                 return "redirect:/product/new";
+            }
+             Validate ProductbomDTO;
+            for (ProductbomDTO bom : productDTO.getProductbomlist()) {
+                if (bom.getName() == null || bom.getName().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Product BOM name cannot be empty!");
+                    return "redirect:/product/new";
+                }
+                if (bom.getQuantity() <= 0) {
+                    redirectAttributes.addFlashAttribute("error", "Product BOM quantity must be greater than 0!");
+                    return "redirect:/product/new";
+                }
+                if (bom.getUnit() == null || bom.getUnit().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("error", "Product BOM unit cannot be empty!");
+                    return "redirect:/product/new";
+                }
             }
             productService.save(productDTO);
             redirectAttributes.addFlashAttribute("message", "The Product has been saved successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to save the product: " + e.getMessage());
+            System.out.println("1");
             return "redirect:/product/new";
         }
         return "redirect:/product";
     }
 
+
     @GetMapping("/{id}")
     public String editProductAndProductbom(@PathVariable("id") Long id,
                                            Model model) {
-        ProductDTO existingProduct = productService.findById(id);
+        ProductDTO existingProduct = productService.findDTOById(id);
         List<ProductbomDTO> productbomList = existingProduct.getProductbomlist();
         if (productbomList == null) {
             productbomList = new ArrayList<>();
@@ -162,7 +181,7 @@ public class ProductController {
 
     @GetMapping("/submit")
     public String submitProduct( @ModelAttribute ProductDTO productDTO,
-                                RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes) {
         try {
             productService.save(productDTO);
         } catch (Exception e) {

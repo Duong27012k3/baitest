@@ -1,6 +1,6 @@
 package com.nttemoi.warehouse.repositories;
 
-import com.nttemoi.warehouse.entities.Productbom;
+import com.nttemoi.warehouse.entities.InboundDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public interface ProductbomRepository extends JpaRepository<Productbom, Long> {
-    Page<Productbom> findByProductId(Long productId, Pageable pageable);
-    Page<Productbom> findByNameLikeAndProductId(String name, Long productId, Pageable pageable);
+public interface InboundDetailsRepository extends JpaRepository <InboundDetails, Long> {
+    Page <InboundDetails> findAllByInboundId (Long inboundId, Pageable pageable);
 }

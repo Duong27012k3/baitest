@@ -35,7 +35,7 @@ public class Supplier {
     private String email;
 
     @Column(nullable = false)
-    private boolean published ;
+    private boolean status ;
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();

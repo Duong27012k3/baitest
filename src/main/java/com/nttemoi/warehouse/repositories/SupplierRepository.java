@@ -1,6 +1,5 @@
 package com.nttemoi.warehouse.repositories;
 
-import com.nttemoi.warehouse.dtos.SupplierDTO;
 import com.nttemoi.warehouse.entities.Supplier;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -15,8 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface SupplierRepository extends JpaRepository <Supplier, Long> {
     Page<Supplier> findByNameLikeOrPhoneLike(String name, String phone, Pageable pageable);
 
-    @Query("UPDATE Supplier t SET t.published = :published WHERE t.id = :id")
+    @Query("UPDATE Supplier t SET t.status = :status WHERE t.id = :id")
     @Modifying
-    void updatePublishedStatus(Long id, boolean published);
-
+    void updatePublishedStatus(Long id, boolean status);
 }

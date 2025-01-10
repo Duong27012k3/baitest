@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductbomServiceImpl implements ProductbomService {
-
     private final ProductbomRepository productbomRepository;
     private final ModelMapper modelMapper;
 
@@ -82,5 +81,4 @@ public class ProductbomServiceImpl implements ProductbomService {
     public Page<ProductbomDTO> findByKeywordAndProductId(String keyword, Long productId, int page, int size) {
         return productbomRepository.findByNameLikeAndProductId("%" + keyword + "%", productId, PageRequest.of(page, size)).map(this::convertToDTO);
     }
-
 }

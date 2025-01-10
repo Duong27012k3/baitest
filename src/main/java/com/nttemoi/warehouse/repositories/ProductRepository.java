@@ -1,6 +1,5 @@
 package com.nttemoi.warehouse.repositories;
 
-import com.nttemoi.warehouse.dtos.ProductDTO;
 import com.nttemoi.warehouse.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository <Product, Long> {
     Page<Product> findByNameLikeOrTypeLike(String name, String type, Pageable pageable);
     @Query("UPDATE Product t SET t.published = :published WHERE t.id = :id")
     @Modifying

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/supplier")
+@RequestMapping ("/supplier")
 public class SupplierController {
     private final SupplierServiceImpl supplierService;
 
@@ -57,7 +57,7 @@ public class SupplierController {
     @GetMapping("/new")
     public String addSupplier(Model model) {
         SupplierDTO supplier = new SupplierDTO();
-        supplier.setPublished(true);
+        supplier.setStatus(true);
 
         model.addAttribute("suppliers", supplier);
 
@@ -76,7 +76,7 @@ public class SupplierController {
     @GetMapping("/{id}")
     public String editSupplier(@PathVariable("id") Long id,
                                Model model) {
-        SupplierDTO supplier = supplierService.findById(id);
+        SupplierDTO supplier = supplierService.findByIdDTO(id);
 
         model.addAttribute("suppliers", supplier);
         return "add-supplier";
@@ -96,15 +96,15 @@ public class SupplierController {
         return "redirect:/supplier";
     }
 
-    @GetMapping("/{id}/published/{status}")
+    @GetMapping("/{id}/status/{status}")
     public String updateSupplierPublishedStatus(@PathVariable("id") Long id,
-                                                @PathVariable("status") boolean published,
+                                                @PathVariable("status") boolean status,
                                                 RedirectAttributes redirectAttributes) {
         try {
-            supplierService.updatePublishedStatus(id, published);
+            supplierService.updatePublishedStatus(id, status);
 
-            String status = published ? "published" : "disabled";
-            String message = "The Supplier has been " + status;
+            String status1 = status ? "status" : "disabled";
+            String message = "The Supplier has been " + status1;
 
             redirectAttributes.addFlashAttribute("message", message);
         } catch (Exception e) {

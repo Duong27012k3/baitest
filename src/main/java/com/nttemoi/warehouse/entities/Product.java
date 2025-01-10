@@ -58,6 +58,5 @@ public class Product {
     private List<Productbom> productbomlist = new ArrayList<>();
 
     public void setProductboms(List<Productbom> productboms) {
-        
     }
 }

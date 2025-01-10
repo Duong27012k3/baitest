@@ -7,6 +7,7 @@ import com.nttemoi.warehouse.entities.Product;
 import com.nttemoi.warehouse.entities.Productbom;
 import com.nttemoi.warehouse.entities.Supplier;
 import com.nttemoi.warehouse.repositories.ProductRepository;
+import com.nttemoi.warehouse.repositories.ProductbomRepository;
 import com.nttemoi.warehouse.services.ProductService;
 import com.nttemoi.warehouse.services.ProductbomService;
 import com.nttemoi.warehouse.services.SupplierService;
@@ -25,14 +26,12 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final SupplierService supplierService;
-    private final ProductbomService productbomService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, SupplierService supplierService, ProductbomService productbomService) {
+    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, SupplierService supplierService) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.supplierService = supplierService;
-        this.productbomService = productbomService;
     }
 
     private ProductDTO convertToDTO(Product product) {
@@ -56,9 +55,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDTO> findAll(int page, int size) {
+    public Page<ProductDTO> findAllDTO(int page, int size) {
         return productRepository.findAll(PageRequest.of(page, size, Sort.by("name")))
                 .map(this::convertToDTO);
+    }
+
+    @Override
+    public Page<Product> findAll () {
+        return productRepository.findAll(PageRequest.of(0, 150));
     }
 
     @Override
@@ -68,39 +72,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO findById(Long id) {
+    public ProductDTO findDTOById(Long id) {
         return productRepository.findById(id).map(this::convertToDTO).orElse(null);
     }
 
+    @Override
+    public Product findById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
 
     @Override
     public void save(ProductDTO productDTO) {
         Product product = convertToEntity(productDTO);
-
         if (productDTO.getSupplierDTO() != null && productDTO.getSupplierDTO().getId() != null) {
-            SupplierDTO supplier = supplierService.findById(productDTO.getSupplierDTO().getId());
+            SupplierDTO supplier = supplierService.findByIdDTO(productDTO.getSupplierDTO().getId());
             product.setSupplier(modelMapper.map(supplier, Supplier.class));
         }
-        List<Productbom> productboms = productDTO.getProductbomlist().stream()
-                .map(bomDTO -> modelMapper.map(bomDTO, Productbom.class))
-                .collect(Collectors.toList());
-        product.setProductboms(productboms);
-
-        if (productDTO.getProductbomlist() != null && !productDTO.getProductbomlist().isEmpty()) {
-            productDTO.getProductbomlist().forEach(productbomDTO -> {
-                // Chuyển ProductbomDTO sang Productbom Entity
-                Productbom productbom = modelMapper.map(productbomDTO, Productbom.class);
-                productbom.setProduct(product); // Gán Product vào từng Productbom
-                product.getProductbomlist().add(productbom); // Thêm vào danh sách Productbom của Product
-            });
+        if (product.getProductbomlist() != null) {
+            for (Productbom productbom : product.getProductbomlist()) {
+                // Gán Product vào từng Productbom
+                productbom.setProduct(product);
+            }
         }
-//        if (product.getProductbomlist() != null) {
-//            for (Productbom productbom : product.getProductbomlist()) {
-//                // Gán Product vào từng Productbom
-//                productbom.setProduct(product);
-//            }
-//        }
-
         productRepository.save(product);
     }
 
@@ -127,5 +120,3 @@ public class ProductServiceImpl implements ProductService {
                 .map(this::convertToDTO);
     }
 }
-
-

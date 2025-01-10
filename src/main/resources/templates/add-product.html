@@ -71,7 +71,6 @@
                                             </select>
                                         </div>
                                     </div>
-
                                     <h3>Productbom</h3>
                                     <table border="0" cellpadding="10" class="table table-responsive">
                                         <thead id="table-bom" style="display: none">
@@ -83,10 +82,18 @@
                                         <tbody id="productbom-table">
                                         <tr th:each="productbom, iterStat : ${product.productbomlist}">
                                             <td><input type="checkbox" class="select-checkbox"></td>
-                                            <td><input class="form-control" maxlength="50" minlength="2" required type="text" th:field="*{productbomlist[__${iterStat.index}__].name}" /></td>
-                                            <td><input maxlength="100" minlength="1" type="text" th:field="*{productbomlist[__${iterStat.index}__].quantity}" /></td>
-                                            <td><input maxlength="100" minlength="1" type="text" th:field="*{productbomlist[__${iterStat.index}__].unit}" /></td>
-<!--                                            <input type="hidden" th:field="*{productbomlist[__${iterStat.index}__].product.id}" value="${product.id}" />-->
+                                            <td>
+                                                <input class="form-control" maxlength="50" minlength="2" required type="text" th:field="*{productbomlist[__${iterStat.index}__].name}" />
+                                                <div th:if="${#fields.hasErrors('productbomlist[__${iterStat.index}__].name')}" th:errors="*{productbomlist[__${iterStat.index}__].name}">Lỗi tên BOM</div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" maxlength="100" minlength="1" required type="text" th:field="*{productbomlist[__${iterStat.index}__].quantity}" />
+                                                <div th:if="${#fields.hasErrors('productbomlist[__${iterStat.index}__].quantity')}" th:errors="*{productbomlist[__${iterStat.index}__].quantity}">Lỗi số lượng BOM</div>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" maxlength="100" minlength="1" required type="text" th:field="*{productbomlist[__${iterStat.index}__].unit}" />
+                                                <div th:if="${#fields.hasErrors('productbomlist[__${iterStat.index}__].unit')}" th:errors="*{productbomlist[__${iterStat.index}__].unit}">Lỗi đơn vị BOM</div>
+                                            </td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -95,31 +102,79 @@
                                         <button class="btn btn-danger" type="button" id="delete-btn">Delete</button>
                                     </div>
                                     <div>
-                                    <script>
-                                        let rowIndex = document.querySelectorAll("#productbom-table tr").length;
-                                        const test = document.getElementById('table-bom');
-                                        document.getElementById('add-new-btn').addEventListener('click', function() {
-                                            if (rowIndex === 0) {
-                                                test.style.display = "";
-                                            }
-                                            const newRow = document.createElement('tr');
-                                            newRow.innerHTML = `
-                                            <td><input type="checkbox" class="select-checkbox"></td>
-                                            <td><input type="text" name="productbomlist[${rowIndex}].name" /></td>
-                                            <td><input type="text" name="productbomlist[${rowIndex}].quantity" /></td>
-                                            <td><input type="text" name="productbomlist[${rowIndex}].unit" /></td>
+                                        <script>
+                                            let rowIndex = document.querySelectorAll("#productbom-table tr").length;
+                                            const test = document.getElementById('table-bom');
+                                            document.getElementById('add-new-btn').addEventListener('click', function() {
+                                                if (rowIndex === 0) {
+                                                    test.style.display = "";
+                                                }
+                                                const newRow = document.createElement('tr');
+                                                newRow.innerHTML = `
+        <td><input type="checkbox" class="select-checkbox"></td>
+        <td><input type="text" name="productbomlist[${rowIndex}].name" /></td>
+        <td><input type="text" name="productbomlist[${rowIndex}].quantity" /></td>
+        <td><input type="text" name="productbomlist[${rowIndex}].unit" /></td>
         `;
-                                            document.getElementById('productbom-table').appendChild(newRow);
-                                            rowIndex++; // Tăng chỉ số sau khi thêm hàng
-                                        });
-
-                                        document.getElementById('delete-btn').addEventListener('click', function() {
-                                            document.querySelectorAll('.select-checkbox:checked').forEach(function(checkbox) {
-                                                checkbox.closest('tr').remove();
+                                                document.getElementById('productbom-table').appendChild(newRow);
+                                                rowIndex++; // Tăng chỉ số sau khi thêm hàng
                                             });
-                                            rowIndex = document.querySelectorAll('#productbom-table tr').length; // Cập nhật lại số hàng
-                                        });
-                                    </script>
+
+                                            document.getElementById('delete-btn').addEventListener('click', function() {
+                                                document.querySelectorAll('.select-checkbox:checked').forEach(function(checkbox) {
+                                                    checkbox.closest('tr').remove();
+                                                });
+                                                rowIndex = document.querySelectorAll('#productbom-table tr').length; // Cập nhật lại số hàng
+                                            });
+                                        </script>
+                                        <!--                                    <h3>Productbom</h3>-->
+                                        <!--                                    <table border="0" cellpadding="10" class="table table-responsive">-->
+                                        <!--                                        <thead id="table-bom" style="display: none">-->
+                                        <!--                                        <th>Select</th>-->
+                                        <!--                                        <th>Name</th>-->
+                                        <!--                                        <th>Quantity</th>-->
+                                        <!--                                        <th>Unit</th>-->
+                                        <!--                                        </thead>-->
+                                        <!--                                        <tbody id="productbom-table">-->
+                                        <!--                                        <tr th:each="productbom, iterStat : ${product.productbomlist}">-->
+                                        <!--                                            <td><input type="checkbox" class="select-checkbox"></td>-->
+                                        <!--                                            <td><input class="form-control" maxlength="50" minlength="2" required type="text" th:field="*{productbomlist[__${iterStat.index}__].name}" /></td>-->
+                                        <!--                                            <td><input maxlength="100" minlength="1" type="text" th:field="*{productbomlist[__${iterStat.index}__].quantity}" /></td>-->
+                                        <!--                                            <td><input maxlength="100" minlength="1" type="text" th:field="*{productbomlist[__${iterStat.index}__].unit}" /></td>-->
+                                        <!--&lt;!&ndash;                                            <input type="hidden" th:field="*{productbomlist[__${iterStat.index}__].product.id}" value="${product.id}" />&ndash;&gt;-->
+                                        <!--                                        </tr>-->
+                                        <!--                                        </tbody>-->
+                                        <!--                                    </table>-->
+                                        <!--                                    <div class="actions">-->
+                                        <!--                                        <button class="btn btn-secondary" type="button" id="add-new-btn">Add Row</button>-->
+                                        <!--                                        <button class="btn btn-danger" type="button" id="delete-btn">Delete</button>-->
+                                        <!--                                    </div>-->
+                                        <!--                                    <div>-->
+                                        <!--                                    <script>-->
+                                        <!--                                        let rowIndex = document.querySelectorAll("#productbom-table tr").length;-->
+                                        <!--                                        const test = document.getElementById('table-bom');-->
+                                        <!--                                        document.getElementById('add-new-btn').addEventListener('click', function() {-->
+                                        <!--                                            if (rowIndex === 0) {-->
+                                        <!--                                                test.style.display = "";-->
+                                        <!--                                            }-->
+                                        <!--                                            const newRow = document.createElement('tr');-->
+                                        <!--                                            newRow.innerHTML = `-->
+                                        <!--                                            <td><input type="checkbox" class="select-checkbox"></td>-->
+                                        <!--                                            <td><input type="text" name="productbomlist[${rowIndex}].name" /></td>-->
+                                        <!--                                            <td><input type="text" name="productbomlist[${rowIndex}].quantity" /></td>-->
+                                        <!--                                            <td><input type="text" name="productbomlist[${rowIndex}].unit" /></td>-->
+                                        <!--        `;-->
+                                        <!--                                            document.getElementById('productbom-table').appendChild(newRow);-->
+                                        <!--                                            rowIndex++; // Tăng chỉ số sau khi thêm hàng-->
+                                        <!--                                        });-->
+
+                                        <!--                                        document.getElementById('delete-btn').addEventListener('click', function() {-->
+                                        <!--                                            document.querySelectorAll('.select-checkbox:checked').forEach(function(checkbox) {-->
+                                        <!--                                                checkbox.closest('tr').remove();-->
+                                        <!--                                            });-->
+                                        <!--                                            rowIndex = document.querySelectorAll('#productbom-table tr').length; // Cập nhật lại số hàng-->
+                                        <!--                                        });-->
+                                        <!--                                    </script>-->
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-1 form-check-label" for="published">Published</label>

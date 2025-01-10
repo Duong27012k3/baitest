@@ -1,7 +1,7 @@
 package com.nttemoi.warehouse.services.impl;
 
-import com.nttemoi.warehouse.entities.Supplier;
 import com.nttemoi.warehouse.dtos.SupplierDTO;
+import com.nttemoi.warehouse.entities.Supplier;
 import com.nttemoi.warehouse.repositories.SupplierRepository;
 import com.nttemoi.warehouse.services.SupplierService;
 import org.modelmapper.ModelMapper;
@@ -10,10 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
-@Service
 
+@Service
 public class SupplierServiceImpl implements SupplierService {
     private final SupplierRepository supplierRepository;
 
@@ -34,7 +35,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public Page<SupplierDTO> findAll(int page, int size) {
-        Page<Supplier> suppliers = supplierRepository.findAll(PageRequest.of(page, size,Sort.by("name")));
+        Page<Supplier> suppliers = supplierRepository.findAll(PageRequest.of(page, size, Sort.by("name")));
         return suppliers.map(supplier -> modelMapper.map(supplier, SupplierDTO.class));
     }
     @Override
@@ -50,10 +51,15 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDTO findById(Long id) {
+    public SupplierDTO findByIdDTO(Long id) {
         return supplierRepository.findById(id)
                 .map(this::convertToDTO)
                 .orElse(null);
+    }
+
+    @Override
+    public Supplier findById (Long id) {
+        return supplierRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -62,8 +68,8 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void updatePublishedStatus(Long id, boolean published) {
-        supplierRepository.updatePublishedStatus(id, published);
+    public void updatePublishedStatus(Long id, boolean status) {
+        supplierRepository.updatePublishedStatus(id, status);
     }
 
     @Override
@@ -85,4 +91,3 @@ public class SupplierServiceImpl implements SupplierService {
                 .map(this::convertToDTO);
     }
 }
-
