@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -41,13 +42,13 @@ public class ProductController {
         try {
             if (keyword == null) {
                 if (order != null) {
-                    pageTuts = productService.findAllAndSortDTO(page - 1, size, order, orderBy);
+                    pageTuts = productService.findAllAndSort(page - 1, size, order, orderBy);
                 } else {
                     pageTuts = productService.findAllDTO(page - 1, size);
                 }
             } else {
                 if (order != null) {
-                    pageTuts = productService.findByKeywordAndSortDTO(keyword, page - 1, size, order, orderBy);
+                    pageTuts = productService.findByKeywordAndSort(keyword, page - 1, size, order, orderBy);
                 } else {
                     pageTuts = productService.findByKeyword(keyword, page - 1, size);
                 }
@@ -114,6 +115,7 @@ public class ProductController {
 
     @PostMapping("/save")
     public String saveProduct(@Valid @ModelAttribute("product") ProductDTO productDTO,
+                              BindingResult result,
                               RedirectAttributes redirectAttributes) {
         try {
             if (productDTO.getName() == null || productDTO.getName().isEmpty()) {
@@ -136,7 +138,7 @@ public class ProductController {
                 }
             }
             }
-            productService.saveDTO(productDTO);
+            productService.save(productDTO);
             redirectAttributes.addFlashAttribute("message", "The Product has been saved successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to save the product: " + e.getMessage());
@@ -165,7 +167,7 @@ public class ProductController {
     public String deleteProduct(@PathVariable("id") Long id,
                                 RedirectAttributes redirectAttributes) {
         try {
-            productService.deleteByIdDTO(id);
+            productService.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "The Product has been deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
@@ -177,7 +179,7 @@ public class ProductController {
     public String submitProduct( @ModelAttribute ProductDTO productDTO,
                                  RedirectAttributes redirectAttributes) {
         try {
-            productService.saveDTO(productDTO);
+            productService.save(productDTO);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to submit the product: " + e.getMessage());
         }
